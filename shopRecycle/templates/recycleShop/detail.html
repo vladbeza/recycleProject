@@ -1,0 +1,25 @@
+{% extends 'recycleShop/base.html' %}
+{% load static %}
+{% block title %}
+    {{ product.product_name }}
+{% endblock %}
+{% block content %}
+    <div class="product-detail">
+        <div class="col-sm-4">
+            <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/no-image.jpg'%}{% endif %}" class="img-responsive">
+        </div>
+    <div class="col-sm-8">
+      <h1>{{ product.product_name }}</h1>
+      <h2><a href="{{ product.category.get_abs_url }}">{{ product.category }}</a></h2>
+      <p class="price">{{ product.price }} грн.</p>
+        <form action="{% url 'cart:cart_add' product.id %}" method="post">{% csrf_token %}
+            {{ cart_product_form }}
+        <input type="submit" value="Add to basket">
+        </form>
+      <span>
+        {{ product.description | linebreaks}}
+      </span>
+        <span> Available {{ product.count }} </span>
+    </div>
+  </div>
+{% endblock %}

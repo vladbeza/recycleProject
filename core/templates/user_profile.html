@@ -1,0 +1,16 @@
+{% extends 'recycleShop/base.html' %}
+
+{% block content %}
+  <h2>User profilep</h2>
+  <div class="user_profile">
+      <ul>
+          <li>Username: {{user.username}}</li>
+          <li>Email: {{user.email}}</li>
+          <li>First Name: {{user.first_name}}</li>
+          <li>Last Name: {{user.last_name}}</li>
+          <li>City: {{user.city}}</li>
+          <li>Birth date: {{user.profile.birth_date}}</li>
+      </ul>
+      <a href="{% url 'core:update_profile' %}">Edit</a>
+  </div>
+{% endblock %}

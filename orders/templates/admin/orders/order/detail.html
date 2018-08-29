@@ -1,0 +1,82 @@
+{% extends "admin/base_site.html" %}
+
+{% load static %}
+
+{% block title %}
+  Order {{ order.id }} {{ block.super }}
+{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href='{% url "admin:index" %}'>Main</a> ›
+  <a href='{% url "admin:orders_order_changelist" %}'>Orders</a> ›
+  <a href='{% url "admin:orders_order_change" order.id %}'>Order {{ order.id }}</a> ›
+  Details
+</div>
+{% endblock %}
+
+{% block content %}
+  <h1>Order {{ order.id }}</h1>
+  <ul class="object-tools">
+    <li>
+      <a href="#" onclick="window.print()">Print order</a>
+    </li>
+  </ul>
+  <table width="100%">
+    <tr>
+      <th>Created</th>
+      <td>{{ order.created }}</td>
+    </tr>
+    <tr>
+      <th>Customer</th>
+      <td>{{ order.first_name }} {{ order.last_name }}</td>
+    </tr>
+    <tr>
+      <th>E-mail</th>
+      <td><a href="mailto:{{ order.email }}">{{ order.email }}</a></td>
+    </tr>
+    <tr>
+      <th>Adress</th>
+      <td>{{ order.address }}</td>
+    </tr>
+    <tr>
+      <th>Full price</th>
+      <td>{{ order.get_total_price }} uah.</td>
+    </tr>
+    <tr>
+      <th>Status</th>
+      <td>{% if order.paid %}Paid{% else %}Waiting for payment{% endif %}</td>
+    </tr>
+  </table>
+
+  <div class="module">
+    <div class="tabular inline-related list-related">
+      <table>
+        <h2>Ordered items</h2>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Count</th>
+            <th>Full price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in order.items.all  %}
+            <tr class='row{% cycle "1" "2" %}'>
+              <td>{{ item.product.product_name }}</td>
+              <td>{{ item.price }} руб.</td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.total_price }} руб.</td>
+            </tr>
+          {% endfor %}
+          <tr class="total">
+            <td colspan="3">Total</td>
+            <td class="num">{{ order.get_total_price }} руб.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'recycleShop/base.html' %}
+{% load static %}
+{% block title %}
+  {% if category %} {{ category.name }} {% else %} All products list {% endif %}
+{% endblock %}
+{% block content %}
+  <div id="sidebar" class="col-sm-3">
+    <h3>Categories</h3>
+    <ul>
+      <li {% if not category %} class="selected" {% endif %}>
+        <a href="{% url 'shopRecycle:product_list' %}">All</a>
+      </li>
+      {% for cat in categories %}
+        <li {% if category.category_name == cat.category_name %} class="selected" {% endif %}>
+            <a href="{{ cat.get_abs_url }}">{{ cat.category_name }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div id="main" class="product_list col-sm-9">
+    <h1>{% if category %}{{ category.category_name }}{% else %}All products{% endif %}</h1>
+    <div class="items row">
+      {% for product in all_products %}
+        <div class="item col-sm-4">
+          <a class="product_image" href="{{ product.get_abs_url }}">
+            <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/no-image.jpg'%}{% endif %}" class="img-responsive">
+          </a>
+          <a class="product_link" href="{{ product.get_abs_url }}">{{ product.product_name }}</a><br>
+          {{ product.price }} грн.
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}</code>
+</pre>

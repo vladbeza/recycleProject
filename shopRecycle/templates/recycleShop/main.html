@@ -1,0 +1,42 @@
+{% extends 'recycleShop/base.html' %}
+{% load static %}
+{% block title %}
+  Kosatka Recycle Shop
+{% endblock %}
+{% block content %}
+    <div class="navbar-categories">
+        {% for category in categories %}
+        <div class="dropdown">
+            <a href="{% url 'shopRecycle:product_list_by_category' category_name=category.category_name %}"><button class="dropbtn">{{ category.category_name }}</button></a>
+        </div>
+        {% endfor %}
+    </div>
+    <h1>Top products</h1>
+
+    <div class="top_products row">
+        {% for prod in main_products %}
+        <div class="prod_item">
+          <a class="product_image" href="{{ product.get_abs_url }}">
+            <img src="{% if prod.image %}{{ prod.image.url }}{% else %}{% static 'img/no-image.jpg'%}{% endif %}" class="img-responsive">
+          </a>
+          <a class="product_link" href="{{ prod.get_abs_url }}">{{ prod.product_name }}</a><br>
+          {{ prod.price }} грн.
+        </div>
+        {% endfor %}
+    </div>
+
+    <h1>Blog</h1>
+
+    <div class="top_blogs">
+        {% for blog in blogs %}
+        <div class="blog_item">
+            <a class="blog_image" href="{{ blog.get_abs_url }}">
+                <img src="{% if blog.short_image %}{{ blog.short_image.url }}{% else %}{% static 'img/no-image.jpg'%}{% endif %}" class="img-responsive">
+            </a>
+            <a class="blog_link" href="{{ blog.get_abs_url }}">{{ blog.title }}</a>
+            <p>{{ blog.short_description }}</p>
+        </div>
+        {% endfor %}
+        <a class="blog_details_btn" href="{% url 'news:posts_list' %}">Read More...</a>
+    </div>
+{% endblock %}

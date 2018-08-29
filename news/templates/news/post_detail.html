@@ -1,0 +1,35 @@
+{% extends 'recycleShop/base.html' %}
+
+{% block title %}
+    {{ post.title }}
+{% endblock %}
+
+{% block content %}
+    <h1> {{ post.title }}</h1>
+    <img src="{{ post.image.url }}">
+    <p>Author: {{ post.author }}</p>
+    <div class="post_description">
+        {{ post.text | safe }}
+    </div>
+    {% if user.is_authenticated %}
+        {% for comment in post.comments.all %}
+            <div class="comment">
+                <p>{{ comment.title }}</p>
+                <p>{{ comment.author }}</p>
+                <p>{{ comment.created_date }}</p>
+                {{ comment.text | safe }}
+            </div>
+        {% endfor %}
+        <p>{{ user.username }}</p>
+        <p>Add Comment:</p>
+        <form method="post" action=".">
+            {{ form.media }}
+            {{ form.as_p }}
+            {% csrf_token %}
+            <input type="submit" value="Add"/>
+        </form>
+    {% else %}
+        <p>Please, log in to see comments</p>
+        <a href="{% url 'core:login' %}">login</a> / <a href="{% url 'core:signup' %}">signup</a>
+    {% endif %}
+{% endblock %}

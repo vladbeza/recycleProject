@@ -1,0 +1,82 @@
+{% extends 'recycleShop/base.html' %}
+{% load static %}
+
+{% block title %}
+    Order creating
+{% endblock %}
+
+{% block js-head %}
+    <script src="{% static 'js/jquery.maskedinput.js' %}"></script>
+    <script src="{% static 'js/create_order.js' %}"></script>
+    <script type="text/javascript">
+    jQuery(function($){
+    $(".phone").mask("+38(099) 999-99-99");
+    });
+    </script>
+{% endblock js-head %}
+
+{% block content %}
+    <h1>Order creating</h1>
+    <div class="col-sm-4">
+        <h2>Fill the form</h2>
+        <form class="order-form" action="." method="post">
+            {% csrf_token %}
+            {% if not user.is_authenticated %}
+                {{ form.as_p }}
+            {% else %}
+                {% for field in form %}
+                    <p>{{ field.label_tag }}<br>
+                    {% if field.name == "first_name" %}
+                         <input type="text" name="{{ field.name }}" value="{{ user.first_name }}">
+                    {% elif field.name == "last_name" %}
+                         <input type="text" name="{{ field.name }}" value="{{ user.last_name }}">
+                    {% elif field.name == "email" %}
+                        <input type="text" name="{{ field.name }}" value="{{ user.email }}">
+                        {% elif field.name == "phone_number" %}
+                        <input class="phone" type="text" name="{{ field.name }}" value="+38(099) 999-99-99">
+                    {% elif field.name == "city" %}
+                        <select class="select_text_city" name="{{ field.name }}">
+                            <option>Выберите город</option>
+                        </select>
+                    {% elif field.name == "address" %}
+                        <p>Please select your preferred delivery method:</p>
+                         <div>
+                            <input type="radio" id="radioHomeDelivery" checked="checked" value="1">
+                             <label for="radioHomeDelivery">Доставка на дом</label>
+
+                            <input type="radio" id="radioNovaPoshtaDelivery" value="2">
+                             <label for="radioNovaPoshtaDelivery">Доставка в отделение новой почты</label>
+
+                        <input id="input_text_address" name="{{ field.name }}" type="text">
+                        <select id="select_text_address" style="display: none;">
+                            <option>Выберите адрес</option>
+                            {% for city in cities %}
+                              <option>{{ city }}</option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                             <input type="text" name="{{ field.name }}">
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            <input type="submit" value="Create">
+        </form>
+    </div>
+    <div class="order-info col-sm-8">
+    <h2>Your order</h2>
+    <ul>
+      {% for item in cart  %}
+        <li>
+          {{ item.product.product_name }} | Count: {{ item.count }} | Price: {{ item.total_price }} грн.
+        </li>
+      {% endfor %}
+        {% if cart.cupon %}
+        <li>
+          "{{ cart.cupon.code }}" ({{ cart.cupon.discount }}% discount)
+          <span> - {{ cart.get_discount|floatformat:"2"}} грн.</span>
+        </li>
+      {% endif %}
+    </ul>
+        <p><strong>Total:</strong> {{ cart.get_total_price_after_discount|floatformat:"2"}} грн.</p>
+  </div>
+{% endblock %}
